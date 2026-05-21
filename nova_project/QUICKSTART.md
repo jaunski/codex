@@ -18,7 +18,12 @@ python nova_project/task_engine.py tick
 python nova_project/task_engine.py status
 ```
 
-## Continuidade no GitHub
+## GitHub Actions
 
-O workflow `.github/workflows/nova-project-tick.yml` roda periodicamente e também pode ser executado manualmente pela aba Actions.
-Ele executa um ciclo, salva estado em `.nova_project/` e faz commit dos avanços.
+- `nova-project-tick.yml` roda a cada 30 minutos e também manualmente.
+- `nova-manual-push.yml` permite inserir tarefa pela aba Actions.
+- `nova-issue-capture.yml` captura issues abertas ou editadas e executa um ciclo.
+
+## Continuidade
+
+O estado fica em `.nova_project/` e cada execução tenta salvar o avanço por commit.
