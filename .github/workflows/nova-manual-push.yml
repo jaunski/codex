@@ -1,0 +1,39 @@
+name: Nova Manual Push
+
+on:
+  workflow_dispatch:
+    inputs:
+      title:
+        description: 'Título da tarefa'
+        required: true
+        default: 'Tarefa manual'
+      text:
+        description: 'Texto da tarefa ou projeto'
+        required: true
+      source:
+        description: 'Origem'
+        required: false
+        default: 'manual-actions'
+
+permissions:
+  contents: write
+
+jobs:
+  push-and-tick:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Add task and run cycle
+        run: |
+          python nova_project/task_engine.py push --id "manual-${{ github.run_id }}" --source "${{ inputs.source }}" --title "${{ inputs.title }}" --text "${{ inputs.text }}"
+          python nova_project/task_engine.py tick
+      - name: Commit state
+        run: |
+          git config user.name "nova-project-bot"
+          git config user.email "actions@github.com"
+          git add .nova_project || true
+          git commit -m "Nova manual push" || echo "No changes"
+          git push || true
