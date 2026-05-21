@@ -1,13 +1,13 @@
 {
   "manifest_version": 3,
   "name": "Nova Project Bridge",
-  "version": "0.1.0",
-  "description": "Captura prompts de projeto/tarefa no ChatGPT e envia para o Nova Project local.",
+  "version": "0.2.0",
+  "description": "Detecta textos de projeto/tarefa no ChatGPT Web e aciona um workflow do GitHub.",
   "permissions": ["storage"],
   "host_permissions": [
     "https://chatgpt.com/*",
     "https://chat.openai.com/*",
-    "http://127.0.0.1:8765/*"
+    "https://api.github.com/*"
   ],
   "content_scripts": [
     {
