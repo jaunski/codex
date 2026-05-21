@@ -1,0 +1,29 @@
+name: Nova Project Tick
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/30 * * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run tick
+        run: python nova_project/task_engine.py tick
+      - name: Persist state
+        run: |
+          git config user.name "nova-project-bot"
+          git config user.email "actions@github.com"
+          git add .nova_project || true
+          git commit -m "Nova project tick" || echo "No changes"
+          git push || true
