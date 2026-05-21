@@ -1,0 +1,32 @@
+name: Nova Issue Capture
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Capture
+        env:
+          TITLE: ${{ github.event.issue.title }}
+          BODY: ${{ github.event.issue.body }}
+          NUM: ${{ github.event.issue.number }}
+        run: |
+          python nova_project/task_engine.py push --id "issue-${NUM}-${{ github.run_id }}" --source "github" --title "$TITLE" --text "$TITLE $BODY"
+          python nova_project/task_engine.py tick
+      - name: Commit state
+        run: |
+          git config user.name "nova-project-bot"
+          git config user.email "actions@github.com"
+          git add .nova_project || true
+          git commit -m "Nova issue capture" || echo "No changes"
+          git push || true
